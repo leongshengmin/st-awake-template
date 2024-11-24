@@ -23,6 +23,7 @@ jobs:
       - name: Install dependencies
         run: |
           pip install selenium
+          pip install webdriver_manager
 
       - name: Run Python script to wake up Streamlit apps
         run: python wake_up_streamlit.py

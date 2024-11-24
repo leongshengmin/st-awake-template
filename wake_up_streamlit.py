@@ -6,10 +6,15 @@ from selenium.common.exceptions import NoSuchElementException
 from streamlit_app import STREAMLIT_APPS
 import datetime
 
-# Set up Selenium webdriver (assuming Chrome)
+from selenium import webdriver
+from selenium.webdriver.chrome.service import Service
+from webdriver_manager.chrome import ChromeDriverManager
+
+
 options = webdriver.ChromeOptions()
 options.add_argument('--headless')  # Run Chrome in headless mode
-driver = webdriver.Chrome(options=options)
+driver = webdriver.Chrome(service=Service(ChromeDriverManager().install()), options=options)
+
 
 # Initialize log file
 log_file = open("wakeup_log.txt", "a")
@@ -22,9 +27,11 @@ for url in STREAMLIT_APPS:
     try:
         # Navigate to the webpage
         driver.get(url)
+        print(f"The current url is: {driver.current_url}")
 
         # Check if the wake up button is already clicked
-        already_awake = "Already awake" in driver.page_source
+        already_awake = ("Already awake" in driver.page_source) or ("_spinnerContainer_" in driver.page_source)
+        print(f"already_awake: {already_awake}")
         
         if not already_awake:
             # Find the button element by data-testid
